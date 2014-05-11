@@ -3,4 +3,16 @@ extends layout
 block content
   h1= title
   canvas(id="canvas_id", width="640", height="480")
+  p
+    button(onclick='goFullScreen();') Fullscreen
   script(src="javascripts/demo.js")
+  script.
+    function goFullScreen(){
+        var canvas = document.getElementById("canvas_id");
+        if(canvas.requestFullScreen)
+            canvas.requestFullScreen();
+        else if(canvas.webkitRequestFullScreen)
+            canvas.webkitRequestFullScreen();
+        else if(canvas.mozRequestFullScreen)
+            canvas.mozRequestFullScreen();
+    };

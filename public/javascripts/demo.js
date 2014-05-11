@@ -14,9 +14,10 @@ touchdemo.canvas.Scene.new({
         el.fillStyle = "red";
         el.fillRect(0, 0, 100, 100);
 
-        el.on("dragright", function(e, mouse) {
+        el.on("drag", function(e, mouse) {
             this.x = e.gesture.deltaX;
             this.y = e.gesture.deltaY;
+            console.log(e);
         });
 
         stage.append(el);
