@@ -1,18 +1,35 @@
 extends layout
 
 block content
-  h1= title
-  canvas(id="canvas_id", width="640", height="480")
-  p
-    button(onclick='goFullScreen();') Fullscreen
-  script(src="javascripts/demo.js")
+  canvas(id="canvas_id", width="800", height="600")
   script.
-    function goFullScreen(){
-        var canvas = document.getElementById("canvas_id");
-        if(canvas.requestFullScreen)
-            canvas.requestFullScreen();
-        else if(canvas.webkitRequestFullScreen)
-            canvas.webkitRequestFullScreen();
-        else if(canvas.mozRequestFullScreen)
-            canvas.mozRequestFullScreen();
-    };
+    (function() {
+            var htmlCanvas = document.getElementById('canvas_id'),
+
+            context = htmlCanvas.getContext('2d');
+
+            initialize();
+ 
+            function initialize() {
+              document.body.addEventListener('touchmove', function(event) {
+                  event.preventDefault();
+              }, false);
+                window.addEventListener('resize', resizeCanvas, false);
+                resizeCanvas();
+            }
+                   
+            function redraw() {
+                context.strokeStyle = 'blue';
+                context.lineWidth = '5';
+                context.strokeRect(0, 0, window.innerWidth, window.innerHeight);
+            }
+        
+            function resizeCanvas() {
+                htmlCanvas.width = window.innerWidth;
+                htmlCanvas.height = window.innerHeight;
+                redraw();
+            }
+        
+        })();
+  script(src="//#ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js")
+  script(src="javascripts/demo.js")
