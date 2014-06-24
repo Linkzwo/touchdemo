@@ -71,16 +71,46 @@ touchdemo.canvas.Scene.new({
         //Function to create entities
         function addEntities(x, y) {
             var entity = Class.New("Entity", [stage]);
-            entity.rect(100); // square
+            entity.rect(x,y,100,100); // square
             entity.position(x, y);
             entity.el.fillStyle = "rgba(0,0,255,0.5)";
             entity.el.fillRect(0, 0, 100, 100);
-            //entity.el.setOriginPoint("middle");
+            entity.el.setOriginPoint("middle");
             entity.width = 100;
             entity.height = 100;
             stage.append(entity.el);
             return entity;
          }
+
+        touchdemo.testEl = this.createElement(200, 200);
+        touchdemo.testEl.rect(200, 200, 200, 200);
+        touchdemo.testEl.setOriginPoint(300,300);
+        touchdemo.testEl.fillStyle = 'green';
+        touchdemo.testEl.fill();
+        touchdemo.testEl.lineWidth = 7;
+        touchdemo.testEl.strokeStyle = 'black';
+        touchdemo.testEl.stroke();        
+        stage.append(touchdemo.testEl);
+        touchdemo.testRotation = 0;
+        touchdemo.testScale = 1;
+        touchdemo.testX = 0;
+        touchdemo.testY = 0;
+        touchdemo.testEl.lastX = 0;
+        touchdemo.testEl.lastY = 0;
+        touchdemo.testEl.on("transform", function(e, mouse){
+            touchdemo.testRotation = e.gesture.rotation;
+            touchdemo.testScale = e.gesture.scale;
+            console.log(this);
+        });
+        touchdemo.testEl.on("drag", function(e, mouse){
+            touchdemo.testX = e.gesture.deltaX + this.lastX;
+            touchdemo.testY = e.gesture.deltaY + this.lastY;
+            console.log("ondrag: " + this.lastX + "," + this.lastY);
+        });
+        touchdemo.testEl.on("dragend", function(e, mouse){
+            this.lastX = touchdemo.testX;
+            this.lastY = touchdemo.testY;
+        });
 
         //Stage events
         stage.on("tap touch release", function(e, mouse) {
@@ -101,6 +131,9 @@ touchdemo.canvas.Scene.new({
                 ent.el.on("drag", function(e, mouse) {
                     ent.position(mouse.x - (ent.width / 2), mouse.y - (ent.height / 2));
                     //ent.position(mouse.x - ent.width, mouse.y - ent.height);
+                });
+                ent.el.on("doubletap", function(e, mouse) {
+                    ent.el.remove();
                 });
                 ent.el.on("transformstart", function(e, mouse){
                     touchdemo.isScalable = true;
@@ -125,6 +158,13 @@ touchdemo.canvas.Scene.new({
     },
     render: function(stage){
         touchdemo.touches.el.fillText('touch count: ' + touchdemo.touchCount, 0, 0);
+        
+        touchdemo.testEl.rotation = touchdemo.testRotation;
+        touchdemo.testEl.scaleX = touchdemo.testScale;
+        touchdemo.testEl.scaleY = touchdemo.testScale;
+        touchdemo.testEl.x = touchdemo.testX;
+        touchdemo.testEl.y = touchdemo.testY;
+        //console.log(touchdemo.testX + ", " + touchdemo.testY);
 
         if(touchdemo.isScalable && touchdemo.selectedEntity){
             touchdemo.selectedEntity.height = touchdemo.tempHeight * touchdemo.scale;
